@@ -2,11 +2,45 @@
 class Stock:
     def __init__(self, symbol=None, name=None, shares=None):
         if symbol is not None and name is not None and shares is not None:
-            self.symbol = symbol
-            self.name = name
+            self._symbol = symbol
+            self._name = name
             # number of shares owned
-            self.shares = shares
+            self._shares = shares
             self.DataList = []
+
+    @property
+    def symbol(self):
+        return self._symbol
+
+    @symbol.setter
+    def symbol(self, whatever):
+        raise RuntimeWarning("Cannot Change stock symbol")
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, name):
+        self._name = name
+
+    @property
+    def shares(self):
+        return self._shares
+
+    @shares.setter
+    def shares(self, shares):
+        raise RuntimeWarning("use buy_shares or sell_shares func")
+
+    def buy_shares(self, shares):
+        self._shares += shares
+
+    def sell_shares(self, shares):
+        if self._shares - shares > 0:
+            self._shares -= shares
+        else:
+            raise RuntimeWarning("cannot sell more shares than owned")
+
 
     def add_data(self, stock_data):
         self.DataList.append(stock_data)
@@ -43,19 +77,19 @@ def main():
         error_count = error_count + 1
         error_list.append("Stock Constructor Error")
     # Test Change Symbol
-    print("Test Change Symbol...", end="")
-    try:
-        testStock.symbol = "NEWTEST"
-        if testStock.symbol == "NEWTEST":
-            print("Successful!")
-        else:
-            print("***ERROR! Symbol change unsuccessful.")
-            error_count = error_count + 1
-            error_list.append("Symbol Change Error")
-    except:
-        print("***ERROR! Symbol change failed.")
-        error_count = error_count + 1
-        error_list.append("Symbol Change Failure")
+    # print("Test Change Symbol...", end="")
+    # try:
+    #     testStock.symbol = "NEWTEST"
+    #     if testStock.symbol == "NEWTEST":
+    #         print("Successful!")
+    #     else:
+    #         print("***ERROR! Symbol change unsuccessful.")
+    #         error_count = error_count + 1
+    #         error_list.append("Symbol Change Error")
+    # except:
+    #     print("***ERROR! Symbol change failed.")
+    #     error_count = error_count + 1
+    #     error_list.append("Symbol Change Failure")
     print("Test Change Name...", end="")
     try:
         testStock.name = "New Test Company"
@@ -70,18 +104,18 @@ def main():
         error_count = error_count + 1
         error_list.append("Name Change Failure")
         print("Test Change Name...", end="")
-    try:
-        testStock.shares = 2000
-        if testStock.shares == 2000:
-            print("Successful!")
-        else:
-            print("***ERROR! Shares change unsuccessful.")
-            error_count = error_count + 1
-            error_list.append("Shares Change Error")
-    except:
-        print("***ERROR! Shares change failed.")
-        error_count = error_count + 1
-        error_list.append("Shares Change Failure")
+    # try:
+    #     testStock.shares = 2000
+    #     if testStock.shares == 2000:
+    #         print("Successful!")
+    #     else:
+    #         print("***ERROR! Shares change unsuccessful.")
+    #         error_count = error_count + 1
+    #         error_list.append("Shares Change Error")
+    # except:
+    #     print("***ERROR! Shares change failed.")
+    #     error_count = error_count + 1
+    #     error_list.append("Shares Change Failure")
 
     # Test add daily data
     print("Creating daily stock data...", end="")
@@ -113,14 +147,77 @@ def main():
 
     if (error_count) == 0:
         print("Congratulations - All Tests Passed")
+        second_test()
     else:
         print("-=== Problem List - Please Fix ===-")
         for em in error_list:
             print(em)
+
     print("Goodbye")
 
 
-# Program Starts Here
+
+def second_test():
+    error_count2 = 0
+    error_list2 = []
+    try:
+        print("Testing creating second stock object...", end="")
+        testStock2 = Stock("TEST", "TestCo", 1)
+        if(testStock2.name is "TestCo" and testStock2.symbol is "TEST" and testStock2.shares == 1):
+            print("Successful!")
+        #print("stock attributes: \n", testStock2.symbol, testStock2.name, testStock2.shares)
+
+    except:
+        error_list2.append("Creating second stock object failed.")
+    try:
+        print("Testing buy_shares function...", end="")
+
+        testStock2.buy_shares(2)
+        #print("stock attributes: \n", testStock2.symbol, testStock2.name, testStock2.shares)
+        if(testStock2.shares == 3):
+            print("Successful!")
+        else:
+            error_list2.append("incorrect share count after buy_shares")
+            raise Exception
+    except:
+        error_list2.append("buying shares failed")
+    try:
+        print("Testing sell_shares function...", end="")
+
+        testStock2.sell_shares(2)
+        #print("stock attributes: \n", testStock2.symbol, testStock2.name, testStock2.shares)
+        if(testStock2.shares == 1):
+            print("Successful")
+        else:
+            error_list2.append("incorrect share count after selling shares")
+            raise Exception
+    except:
+        error_list2.append("selling shares failed")
+    try:
+        print("Testing sell_shares function...", end="")
+        testStock2.sell_shares(4)
+        #print("stock attributes: \n", testStock2.symbol, testStock2.name, testStock2.shares)
+
+    except:
+        if(testStock2.shares == 1):
+            print("Successful!")
+            #print("stock attributes: \n", testStock2.symbol, testStock2.name, testStock2.shares)
+        else:
+            error_list2.append("Failure: was able to sell more stock than owned.")
+
+    error_count2 = len(error_list2)
+    if(error_count2 > 0):
+        print("Tests failed!")
+        for item in error_list2:
+            print(item, "\n")
+    else:
+        print("Congratulations - All Second Tests Passed")
+
+
+
+
+
+    # Program Starts Here
 if __name__ == "__main__":
     # run unit testing only if run as a stand-alone script
     main()
