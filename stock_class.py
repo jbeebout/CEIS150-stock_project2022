@@ -163,7 +163,7 @@ def second_test():
     try:
         print("Testing creating second stock object...", end="")
         testStock2 = Stock("TEST", "TestCo", 1)
-        if(testStock2.name is "TestCo" and testStock2.symbol is "TEST" and testStock2.shares == 1):
+        if(testStock2.name == "TestCo" and testStock2.symbol == "TEST" and testStock2.shares == 1):
             print("Successful!")
         #print("stock attributes: \n", testStock2.symbol, testStock2.name, testStock2.shares)
 
